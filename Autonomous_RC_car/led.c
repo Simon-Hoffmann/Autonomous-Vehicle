@@ -73,7 +73,7 @@ void led_OFF(void){
 * @retval None
 */
 void led_Blink(uint8_t blink_amount, uint16_t blink_duration_ms){
-	while(blink_amount != 0){
+	while(blink_amount > 0){
 		GPIOE->BSRR = (1<<11);
 		delayms(blink_duration_ms);
 		GPIOE->BSRR = (1<<27);

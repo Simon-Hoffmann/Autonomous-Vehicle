@@ -33,6 +33,7 @@
 #include "stm32g474xx.h"
 #include "delay.h"
 #include "led.h"
+#include "event.h"
 
 
 
@@ -54,8 +55,8 @@
 	
 int main(void)
 {
-	led_Init();
-	led_Blink(10, 1000);
+	EVENT_T t =	event_GetEvent();
+	event_SetEvent(EVT_INIT, 0);
 	
 	/* Endlosschleife */
 	while(1)

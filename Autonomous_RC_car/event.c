@@ -3,17 +3,17 @@
  *                                                                        *
  **************************************************************************
  *  PROJECT       MC Mobile  																							*
- *  MODULE        event.c                                           			  *
+ *  MODULE        event.c                                           		  *
  *  REVISION      1.0                                                     *
  *  AUTHOR        Simon Hoffmann & Aleksei Svatko            							*
  **************************************************************************
  *  PURPOSE:                                                              *
- *                                        *
+ *                                      															    *
  *                                                                        *
  **************************************************************************
  *  CHANGE HISTORY:                                                       *
  *   Date  		       Author      						 Description       				    *
- *   29.03.2022  		 S. Hoff & A. Svatko     creation 	*
+ *   29.03.2022  		 S. Hoff & A. Svatko     creation 									  *
  *                                                                        *
  *************************************************************************/
  
@@ -62,19 +62,17 @@ void event_SetEvent(uint16_t eventID, uint16_t Parameter){
 * @param  None
 * @retval EVENT_T:	The next event that is to happen
 */
-EVENT_T event_GetEvent(){
+EVENT_T event_GetEvent(void){
 	if(bufferLength == 0){
 		event.EventID = EVT_NOEVENT;
 		event.EventParameter = 0;
-		return event;
+	} else{
+		event = circularBuffer[readIndex++];
+		bufferLength--;
+	
+		if(readIndex == CIRCLE_BUFFER_SIZE)
+			readIndex = 0;
 	}
-	
-	event = circularBuffer[readIndex++];
-	bufferLength--;
-	
-	if(readIndex == CIRCLE_BUFFER_SIZE)
-		readIndex = 0;
-	
 	return event;
 }
 
