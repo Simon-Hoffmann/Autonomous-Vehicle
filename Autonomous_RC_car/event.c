@@ -35,8 +35,6 @@ static uint8_t writeIndex = 0;
 static uint8_t bufferLength = 0;
 static EVENT_T event;
 
-//Circle buffer with all upcoming events etc.
-
 /**
 * @brief  Adds Event to circleBuffer
 * @param  eventID:		placeholder

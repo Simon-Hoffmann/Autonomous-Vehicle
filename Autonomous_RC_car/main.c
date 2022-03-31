@@ -29,13 +29,9 @@
 
 /*  - I n c l u d e s                                                    */
 
-#include <stdint.h>
 #include "stm32g474xx.h"
-#include "delay.h"
-#include "led.h"
 #include "event.h"
-
-
+#include "eventhandler.h"
 
 /* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
 
@@ -55,12 +51,13 @@
 	
 int main(void)
 {
-	EVENT_T t =	event_GetEvent();
-	event_SetEvent(EVT_INIT, 0);
+	EVENT_T curEvent;
 	
-	/* Endlosschleife */
+	event_SetEvent(EVT_INIT, 0);
+
 	while(1)
 	{
-
+		curEvent = event_GetEvent();
+		eventhandler_Handler1(curEvent);
 	}
 }

@@ -29,6 +29,8 @@
 /*---------------------EVENTS------------------*/
 #define EVT_NOEVENT 				0
 #define EVT_INIT 						1
+#define EVT_LED_ON					2
+#define EVT_LED_OFF					3
 
 /*  - T y p e s                                                          */
 
