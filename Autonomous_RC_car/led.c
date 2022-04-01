@@ -30,9 +30,9 @@
 
 
 void led_Init(void);
-void led_on(void);
-void led_off(void);
-void led_Blink(uint8_t blink_amount, uint16_t blink_duration_ms);
+void led_On(void);
+void led_Off(void);
+void led_Blink(uint8_t blink_amount);
 
 
 /* ----------------------  F U N C T I O N S --------------------------- */
@@ -52,7 +52,7 @@ void led_Init(void){
 * @param  None
 * @retval None
 */
-void led_ON(void){
+void led_On(void){
 	GPIOE->BSRR = (1<<11);
 }
 
@@ -61,7 +61,7 @@ void led_ON(void){
 * @param  None
 * @retval None
 */
-void led_OFF(void){
+void led_Off(void){
 	GPIOE->BSRR = (1<<27);
 }
 
@@ -72,12 +72,12 @@ void led_OFF(void){
 *					blink_duration_ms:	Time between turning LED on and off
 * @retval None
 */
-void led_Blink(uint8_t blink_amount, uint16_t blink_duration_ms){
+void led_Blink(uint8_t blink_amount){
 	while(blink_amount > 0){
 		GPIOE->BSRR = (1<<11);
-		delayms(blink_duration_ms);
+		delayms(500);
 		GPIOE->BSRR = (1<<27);
-		delayms(blink_duration_ms);
+		delayms(500);
 		blink_amount--;
 	}
 }

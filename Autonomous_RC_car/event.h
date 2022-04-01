@@ -31,6 +31,7 @@
 #define EVT_INIT 						1
 #define EVT_LED_ON					2
 #define EVT_LED_OFF					3
+#define EVT_LED_BLINK				4
 
 /*  - T y p e s                                                          */
 

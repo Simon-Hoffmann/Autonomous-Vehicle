@@ -23,24 +23,30 @@
 
 #include "eventhandler.h"
 #include "led.h"
-#include "inithandler.h"
 
 /* ----------------- G L O B A L    V A R I A B L E S ------------------ */
 
 /* ------------  F U N C T I O N   D E F I N I T I O N ----------------- */
+
+static void initHandler(){
+	led_Init();
+}
 
 void eventhandler_Handler1(EVENT_T curEvent){
 	switch(curEvent.EventID){
 		case EVT_NOEVENT:
 			break;
 		case EVT_INIT:
-			inithandler_initialise();
+			initHandler();
 			break;
 		case EVT_LED_ON:
-			led_on();
+			led_On();
 			break;
 		case EVT_LED_OFF:
-			led_off();
+			led_Off();
+			break;
+		case EVT_LED_BLINK:
+			led_Blink(curEvent.EventParameter);
 			break;
 		default:
 			break;
