@@ -25,6 +25,9 @@
 /*************************************************************************/
 #include <stdint.h>
 
+/* LED amount of blinks for different status indication*/
+#define LED_STATUS_INIT	 3
+
 /*  - T y p e s                                                          */
 
 /*  - C o n s t a n t s                                                  */

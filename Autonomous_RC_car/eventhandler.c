@@ -28,10 +28,22 @@
 
 /* ------------  F U N C T I O N   D E F I N I T I O N ----------------- */
 
+/**
+* @brief  Initialises all Peripherals/Hardware components
+* @param  None	
+* @retval None
+*/
 static void initHandler(){
+	event_SetEvent(EVT_LED_BLINK, LED_STATUS_INIT);
 	led_Init();
+	event_SetEvent(EVT_LED_ON, 0);
 }
 
+/**
+* @brief  Handler 1 Handles no event, initialisation and LED events
+* @param  curEvent:	Current event to be executed
+* @retval None
+*/
 void eventhandler_Handler1(EVENT_T curEvent){
 	switch(curEvent.EventID){
 		case EVT_NOEVENT:

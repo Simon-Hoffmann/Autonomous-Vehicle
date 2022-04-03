@@ -67,7 +67,7 @@ void led_Off(void){
 
 
 /**
-* @brief  Blinks LED for specified amount of times with specified duration
+* @brief  Blinks LED (on and off within 1 second) for specified amount of times
 * @param  blink_amount:				Amount of times LED turns on and off
 *					blink_duration_ms:	Time between turning LED on and off
 * @retval None

@@ -52,10 +52,8 @@
 int main(void)
 {
 	EVENT_T curEvent;
-	
 	event_SetEvent(EVT_INIT, 0);
-	event_SetEvent(EVT_LED_BLINK, 5);
-	event_SetEvent(EVT_LED_ON, 0);
+	
 	while(1)
 	{
 		curEvent = event_GetEvent();

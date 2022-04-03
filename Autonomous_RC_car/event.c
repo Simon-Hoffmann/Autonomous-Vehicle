@@ -27,7 +27,7 @@
 
 /* ------------  F U N C T I O N   D E F I N I T I O N ----------------- */
 
-#define CIRCLE_BUFFER_SIZE 	50
+#define CIRCLE_BUFFER_SIZE 	50					//might need to still change the size-------------------------------------------------------------
 
 static EVENT_T circularBuffer[CIRCLE_BUFFER_SIZE] = {0};
 static uint8_t readIndex = 0;
@@ -37,8 +37,8 @@ static EVENT_T event;
 
 /**
 * @brief  Adds Event to circleBuffer
-* @param  eventID:		placeholder
-*					Parameter:	placeholder
+* @param  eventID:		
+*					Parameter:	
 * @retval None
 */
 void event_SetEvent(uint16_t eventID, uint16_t Parameter){
