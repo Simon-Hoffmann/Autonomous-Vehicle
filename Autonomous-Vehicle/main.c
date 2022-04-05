@@ -1,33 +1,26 @@
 /**************************************************************************
- *  COPYRIGHT (C) Peter Raab  2022                                        *
- *                                                                        *
+ *  Autonom Eingebettete Systeme    (AEiSy)                               *  
  *                                                                        *
  **************************************************************************
- *  PROJECT       AEiSy: Px - Basisproject                                *
- *  MODULE        main.c                                                  *
+ *  PROJECT       MC Mobile  																							*
+ *  MODULE        main.c                                           			  *
  *  REVISION      1.0                                                     *
+ *  AUTHOR        Simon Hoffmann & Aleksei Svatko            							*
  **************************************************************************
  *  PURPOSE:                                                              *
- *   The main routine is the start of every C-program. The purpose of     *
- *   the main is to initialize the hardware and start the operation       *
- *   system.                                                              *
- *                                                                        *
- **************************************************************************
- *  REMARKS:                                                              *
- *                                                                        *
+ *   Main Programm									                                      *
  *                                                                        *
  **************************************************************************
  *  CHANGE HISTORY:                                                       *
- *   Revision  Date         Author      Description                       *
- *     1.0      01.02.2022   P. Raab     creation                         *
- *                                                                        *
+ *   Date  		       Author      						 Description       				    *
+ *   28.03.2022  		 S. Hoff & A. Svatko     creation              				*
  *                                                                        *
  *************************************************************************/
 
 
 /* ---------------- G L O B A L   D E F I N I T I O N S ---------------- */
 
-/*  - I n c l u d e s                                                    */
+/*-------------------------- I N C L U D E S ----------------------------*/
 
 #include "stm32g474xx.h"
 #include "event.h"
