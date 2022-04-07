@@ -38,10 +38,10 @@
 
 /*  - P u b l i c  F u n c t i o n  P r o t o t y p e s                 */
 
-void led_Init(void);
-void led_On(void);
-void led_Off(void);
-void led_Blink(uint8_t blink_amount);
+void LED_Init(void);
+void LED_On(void);
+void LED_Off(void);
+void LED_Blink(uint8_t blink_amount);
 
 
 #endif

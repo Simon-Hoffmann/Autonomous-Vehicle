@@ -24,15 +24,16 @@
 #include "stm32g474xx.h"
 #include "led.h"
 #include "delay.h"
+#include "gpio.h"
 
 /* ----------------- G L O B A L    V A R I A B L E S ------------------ */
 
 
 
-void led_Init(void);
-void led_On(void);
-void led_Off(void);
-void led_Blink(uint8_t blink_amount);
+void LED_Init(void);
+void LED_On(void);
+void LED_Off(void);
+void LED_Blink(uint8_t blink_amount);
 
 
 /* ----------------------  F U N C T I O N S --------------------------- */
@@ -42,9 +43,10 @@ void led_Blink(uint8_t blink_amount);
 * @param  None
 * @retval None
 */
-void led_Init(void){
+void LED_Init(void){
 	RCC->AHB2ENR = RCC_AHB2ENR_GPIOEEN;
-	GPIOE->MODER = (1<<22);
+	GPIOX_MODE(GPIO_PE11, GPIO_MODE_OUTPUT);
+	//GPIOE->MODER = (1<<22);
 }
 
 /**
@@ -52,8 +54,9 @@ void led_Init(void){
 * @param  None
 * @retval None
 */
-void led_On(void){
-	GPIOE->BSRR = (1<<11);
+void LED_On(void){
+	GPIOX_SET(GPIO_PE11);
+	//GPIOE->BSRR = (1<<11);
 }
 
 /**
@@ -61,8 +64,9 @@ void led_On(void){
 * @param  None
 * @retval None
 */
-void led_Off(void){
-	GPIOE->BSRR = (1<<27);
+void LED_Off(void){
+	GPIOX_CLR(GPIO_PE11);
+	//GPIOE->BSRR = (1<<27);
 }
 
 
@@ -72,11 +76,13 @@ void led_Off(void){
 *					blink_duration_ms:	Time between turning LED on and off
 * @retval None
 */
-void led_Blink(uint8_t blink_amount){
+void LED_Blink(uint8_t blink_amount){
 	while(blink_amount > 0){
-		GPIOE->BSRR = (1<<11);
+		GPIOX_SET(GPIO_PE11);
+		//GPIOE->BSRR = (1<<11);
 		delayms(500);
-		GPIOE->BSRR = (1<<27);
+		GPIOX_CLR(GPIO_PE11);
+		//GPIOE->BSRR = (1<<27);
 		delayms(500);
 		blink_amount--;
 	}

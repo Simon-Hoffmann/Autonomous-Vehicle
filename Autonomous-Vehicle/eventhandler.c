@@ -23,6 +23,7 @@
 
 #include "eventhandler.h"
 #include "led.h"
+#include "lcd.h"
 
 /* ----------------- G L O B A L    V A R I A B L E S ------------------ */
 
@@ -35,7 +36,8 @@
 */
 static void initHandler(){
 	event_SetEvent(EVT_LED_BLINK, LED_STATUS_INIT);
-	led_Init();
+	LED_Init();
+	//LCD_Init();
 	event_SetEvent(EVT_LED_ON, 0);
 }
 
@@ -52,13 +54,13 @@ void eventhandler_Handler1(EVENT_T curEvent){
 			initHandler();
 			break;
 		case EVT_LED_ON:
-			led_On();
+			LED_On();
 			break;
 		case EVT_LED_OFF:
-			led_Off();
+			LED_Off();
 			break;
 		case EVT_LED_BLINK:
-			led_Blink(curEvent.EventParameter);
+			LED_Blink(curEvent.EventParameter);
 			break;
 		default:
 			break;
