@@ -23,6 +23,7 @@
 /*-------------------------- I N C L U D E S ----------------------------*/
 
 #include "isr.h"
+#include "stm32g474xx.h"
 
 /* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
 
@@ -30,6 +31,28 @@
 
 /* ----------------------- F U N C T I O N S  -------------------------- */
 
-void isr_Init(void){
+
+void ISR_Init(void){
+	/*Selecting clock source*/
+	//RCC->CR |= RCC_CR_HSEON;						//HSE clock enable
+	//while(!(RCC->CR & RCC_CR_HSERDY)); 	//wait for stable clock source
+	//RCC->CFGR |= RCC_CFGR_SW_HSE;				//HSE Selected as system clock
+	RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
+
+	/*Enablind timer registers*/	
+	TIM2->PSC = 3 - 1;					//Prescaler 3 * Arr 1600000 = 4 800 000
+	TIM2->ARR= 1600000 - 1;			//SystemCoreClock = 48 000 000 / 4 800 000 = 10Hz -> every 100ms
+	TIM2->CNT=0;
 	
+	NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),6,0));
+	NVIC_EnableIRQ(TIM2_IRQn);
+	
+	TIM2->CR1 |= TIM_CR1_CEN;	//Run the Timer
+	//RCC_APB1ENR1_TIM2EN;
 }
+
+void TIM2_IRQHandler(){
+	TIM2->SR &= ~TIM_SR_UIF;
+}
+
+

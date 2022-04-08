@@ -81,6 +81,11 @@ void LCD_Init(void){
 	LCD_WriteData8(0x1E, 0x43);								//Set Graphics Area 		30
 	LCD_WriteData8(0x00, 0x81);								//Enable EXOR mode
 	LCD_WriteData8(0x00, 0x9C);								//Enable Graphics and Text Display
+	
+		//quick test
+	LCD_WriteData8('C', LCD_CMD_DATA_WRITE_INCR_ADP);
+	LCD_WriteData8('A', LCD_CMD_DATA_WRITE_INCR_ADP);
+	LCD_WriteData8('T', LCD_CMD_DATA_WRITE_INCR_ADP);
 }
 
 

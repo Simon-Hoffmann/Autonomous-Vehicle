@@ -24,6 +24,7 @@
 #include "eventhandler.h"
 #include "led.h"
 #include "lcd.h"
+#include "isr.h"
 
 /* ----------------- G L O B A L    V A R I A B L E S ------------------ */
 
@@ -35,9 +36,9 @@
 * @retval None
 */
 static void initHandler(){
-	event_SetEvent(EVT_LED_BLINK, LED_STATUS_INIT);
 	LED_Init();
 	//LCD_Init();
+	//ISR_Init();
 	event_SetEvent(EVT_LED_ON, 0);
 }
 
