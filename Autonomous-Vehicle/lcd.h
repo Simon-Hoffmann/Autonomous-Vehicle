@@ -26,24 +26,26 @@
 
 /*FSMC Adresses and LCD Adresses*/
 #define LCD_DATA_ADDR (*((uint8_t*)0x60000000))
-#define LCD_COMMAND_ADR (*(uint8_t*)0x60000001)
-#define LCD_TEXT_HOME_ADDRESS						0x000
-#define LCD_GRAPHICS_HOME_ADDRESS				0x200
+#define LCD_COMMAND_ADR (*((uint8_t*)0x60000001))
+#define LCD_TEXT_HOME_ADDRESS						0x0000U
+#define LCD_GRAPHICS_HOME_ADDRESS				0x0200U
 
 /*LCD Commands*/
-#define LCD_CMD_CURSOR_POINTER					0x21
-#define LCD_CMD_SET_ADDRESS_POINTER			0x24
-#define LCD_CMD_TEXT_HOME_ADDRESS				0x40
-#define LCD_CMD_TEXT_AREA								0x41
-#define LCD_CMD_GRAPHICS_HOME_ADDRESS		0x42
-#define LCD_CMD_GRAPHICS_AREA						0x43
-#define LCD_CMD_EXOR_MODE								0x81
-#define LCD_CMD_TEXT_ON_GRAPHICS_ON			0x9C
-#define LCD_CMD_DATA_WRITE_INCR_ADP			0xC0
+#define LCD_CMD_CURSOR_POINTER					0x21U
+#define LCD_CMD_SET_ADDRESS_POINTER			0x24U
+#define LCD_CMD_TEXT_HOME_ADDRESS				0x40U
+#define LCD_CMD_TEXT_AREA								0x41U
+#define LCD_CMD_GRAPHICS_HOME_ADDRESS		0x42U
+#define LCD_CMD_GRAPHICS_AREA						0x43U
+#define LCD_CMD_EXOR_MODE								0x81U
+#define LCD_CMD_TEXT_ON_GRAPHICS_ON			0x9CU
+#define LCD_CMD_DATA_WRITE_INCR_ADP			0xC0U
+#define LCD_CMD_DATA_WRITE_INV_ADP			0xC4U
+#define LCD_CMD_ONE_LINE_CURSOR					0xA0U
 
 
-#define LCD_TEXT_AREA										30
-#define	LCD_GRAPHICS_AREA								30
+#define LCD_TEXT_AREA										0x1EU	//30
+#define	LCD_GRAPHICS_AREA								0x1EU	//30
 
 /*  - T y p e s                                                          */
 

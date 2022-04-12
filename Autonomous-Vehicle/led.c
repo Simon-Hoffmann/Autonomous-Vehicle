@@ -44,9 +44,9 @@ void LED_Blink(uint8_t blink_amount);
 * @retval None
 */
 void LED_Init(void){
-	RCC->AHB2ENR = RCC_AHB2ENR_GPIOEEN;
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOEEN;
+	GPIOX_MODE_CLR(GPIO_PE11);
 	GPIOX_MODE(GPIO_PE11, GPIO_MODE_OUTPUT);
-	//GPIOE->MODER = (1<<22);
 }
 
 /**
@@ -56,7 +56,6 @@ void LED_Init(void){
 */
 void LED_On(void){
 	GPIOX_SET(GPIO_PE11);
-	//GPIOE->BSRR = (1<<11);
 }
 
 /**
@@ -66,7 +65,6 @@ void LED_On(void){
 */
 void LED_Off(void){
 	GPIOX_CLR(GPIO_PE11);
-	//GPIOE->BSRR = (1<<27);
 }
 
 
@@ -79,10 +77,8 @@ void LED_Off(void){
 void LED_Blink(uint8_t blink_amount){
 	while(blink_amount > 0){
 		GPIOX_SET(GPIO_PE11);
-		//GPIOE->BSRR = (1<<11);
 		delayms(500);
 		GPIOX_CLR(GPIO_PE11);
-		//GPIOE->BSRR = (1<<27);
 		delayms(500);
 		blink_amount--;
 	}

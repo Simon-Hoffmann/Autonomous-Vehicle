@@ -46,7 +46,7 @@ int main(void)
 {
 	EVENT_T curEvent;
 	event_SetEvent(EVT_INIT, 0);
-	
+
 	while(1)
 	{
 		curEvent = event_GetEvent();

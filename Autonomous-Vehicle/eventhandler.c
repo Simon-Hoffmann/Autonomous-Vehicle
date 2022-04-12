@@ -37,7 +37,7 @@
 */
 static void initHandler(){
 	LED_Init();
-	//LCD_Init();
+	LCD_Init();
 	//ISR_Init();
 	event_SetEvent(EVT_LED_ON, 0);
 }

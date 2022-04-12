@@ -30,9 +30,11 @@
 
 /* ----------------------  F U N C T I O N S --------------------------- */
 
-void LCD_WriteData8(uint8_t Data, uint8_t Command);
-void LCD_WriteData16(uint16_t Data, uint8_t Command);
-void LCD_WriteCommand(uint8_t Command);
+static void LCD_WriteData8(uint8_t Data, uint8_t Command);
+static void LCD_WriteData16(uint16_t Data, uint8_t Command);
+static void LCD_WriteCommand(uint8_t Command);
+static void LCD_ClearScreen(void);
+void LCD_Write_Line(char* Text);
 
 /**
 * @brief  Initialise GPIO Pins:
@@ -56,17 +58,17 @@ void LCD_WriteCommand(uint8_t Command);
 */
 void LCD_Init(void){
 	/*PIN CONFIG*/
-	RCC->AHB3ENR = RCC_AHB2ENR_GPIODEN;	//Clock enable
-	RCC->AHB3ENR = RCC_AHB2ENR_GPIOFEN;
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIODEN;	//Clock enable
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOFEN;
 	GPIOF->MODER = (2<<20);						//PF10
 	/*Alernate function low register: AFR[0], high: AFR[1] */
 	GPIOF->AFR[1] = 0xC00;						//PF10: AF12 -> FMC_A0
 	
-	GPIOD->MODER = 0xA0000A0A;				//PD0, PD1, PD4, PD5, PD14-15
-	GPIOD->AFR[0] = 0xCC00CC;					//PD0: AF12-> FMC_D2, PD1: AF12 -> FMC_D3,	PD4: AF12 -> FMC_NOE,	 PD5: AF12 -> FMC_NWE
+	GPIOD->MODER = 0xA0008A0A;				//PD0, PD1, PD4, PD5, PD7, PD14-15
+	GPIOD->AFR[0] = 0xC0CC00CC;					//PD0: AF12-> FMC_D2, PD1: AF12 -> FMC_D3,	PD4: AF12 -> FMC_NOE,	 PD5: AF12 -> FMC_NWE
 	GPIOD->AFR[1] = 0xCC000000;				//PD14: AF12 -> FMC_D0,  PD15: AF12 -> FMC_D1
 	/*GPIO Clock enable in led.c*/
-	GPIOE->MODER = 0x2A8000;						//PE7-10
+	GPIOE->MODER |= 0x2A8000;						//PE7-10
 	GPIOE->AFR[0] = 0xC0000000;				//PE7: AF12 -> FMC_D4
 	GPIOE->AFR[1] = 0xCCC;						//PE8: AF12 -> FMC_D5,  PE9: AF12 -> FMC_D6,  PE10: AF12 -> FMC_D7
 	
@@ -74,27 +76,24 @@ void LCD_Init(void){
 	RCC->AHB3ENR = RCC_AHB3ENR_FMCEN;
 	FMC_Bank1_R->BTCR[0] = 0x00201081;
 	FMC_Bank1_R->BTCR[1] = 0xCFFF40FF;
-
-	LCD_WriteData16(0x000, 0x40);							//Set Text Home Address 0x000
-	LCD_WriteData8(0x1E, 0x41);								//Set Text Area					30
-	LCD_WriteData16(0x200, 0x42);							//Set Graphics					0x200
-	LCD_WriteData8(0x1E, 0x43);								//Set Graphics Area 		30
-	LCD_WriteData8(0x00, 0x81);								//Enable EXOR mode
-	LCD_WriteData8(0x00, 0x9C);								//Enable Graphics and Text Display
 	
-		//quick test
-	LCD_WriteData8('C', LCD_CMD_DATA_WRITE_INCR_ADP);
-	LCD_WriteData8('A', LCD_CMD_DATA_WRITE_INCR_ADP);
-	LCD_WriteData8('T', LCD_CMD_DATA_WRITE_INCR_ADP);
+	LCD_WriteData16(LCD_TEXT_HOME_ADDRESS, LCD_CMD_TEXT_HOME_ADDRESS);
+	LCD_WriteData16(LCD_TEXT_AREA, LCD_CMD_TEXT_AREA);
+	LCD_WriteData16(LCD_GRAPHICS_HOME_ADDRESS, LCD_CMD_GRAPHICS_HOME_ADDRESS);
+	LCD_WriteData16(LCD_GRAPHICS_AREA, LCD_CMD_GRAPHICS_AREA);
+	LCD_WriteCommand(LCD_CMD_EXOR_MODE);
+	LCD_WriteCommand(LCD_CMD_TEXT_ON_GRAPHICS_ON);
+	
+	LCD_ClearScreen();
 }
 
 
 void LCD_InitTest(void){
 	
 	/*PIN CONFIG*/
-	RCC->AHB3ENR = RCC_AHB2ENR_GPIODEN;	//Clock enable
-	RCC->AHB3ENR = RCC_AHB2ENR_GPIOFEN;
-
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIODEN;;	//Clock enable
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOFEN;
+	
 	/*Set Gpio mode to alternate function FSMC*/
 	GPIOX_MODE(GPIO_PF10, GPIO_MODE_AF);	//Address Bus A0
 	GPIOX_MODE(GPIO_PD14, GPIO_MODE_AF);	//Data Bus D0
@@ -130,35 +129,55 @@ void LCD_InitTest(void){
 	
 	/*LCD Configurations*/
 	LCD_WriteData16(LCD_TEXT_HOME_ADDRESS, LCD_CMD_TEXT_HOME_ADDRESS);
-	LCD_WriteData8(LCD_TEXT_AREA, LCD_CMD_TEXT_AREA);
+	LCD_WriteData16(LCD_TEXT_AREA, LCD_CMD_TEXT_AREA);
 	LCD_WriteData16(LCD_GRAPHICS_HOME_ADDRESS, LCD_CMD_GRAPHICS_HOME_ADDRESS);
-	LCD_WriteData8(LCD_GRAPHICS_AREA, LCD_CMD_GRAPHICS_AREA);
+	LCD_WriteData16(LCD_GRAPHICS_AREA, LCD_CMD_GRAPHICS_AREA);
 	LCD_WriteCommand(LCD_CMD_EXOR_MODE);
 	LCD_WriteCommand(LCD_CMD_TEXT_ON_GRAPHICS_ON);
 	
+	LCD_ClearScreen();
+	LCD_Write_Line("Start Text");
+}
+
+void LCD_Write_Line(char* Text){
+	LCD_WriteData16(LCD_TEXT_HOME_ADDRESS, LCD_CMD_SET_ADDRESS_POINTER);
 	
-	//quick test
-	LCD_WriteData8('C', LCD_CMD_DATA_WRITE_INCR_ADP);
-	LCD_WriteData8('A', LCD_CMD_DATA_WRITE_INCR_ADP);
-	LCD_WriteData8('T', LCD_CMD_DATA_WRITE_INCR_ADP);
+	uint8_t i = 0;
+	while(Text[i] != 0){
+		LCD_WriteData8(Text[i++], LCD_CMD_DATA_WRITE_INCR_ADP);
+	}
 }
 
-void LCD_WriteData8(uint8_t Data, uint8_t Command){
-	while(LCD_COMMAND_ADR != 0x3){}
+static void LCD_ClearScreen(void){
+	LCD_WriteData16(LCD_TEXT_HOME_ADDRESS, LCD_CMD_SET_ADDRESS_POINTER);
+	int i =0;
+	for(i = 0; i < LCD_TEXT_AREA * 16; i++){
+		LCD_WriteData16(0x0, LCD_CMD_DATA_WRITE_INCR_ADP);
+	}
+	LCD_WriteData16(0x200, LCD_CMD_SET_ADDRESS_POINTER);
+	for(i = 0; i < LCD_GRAPHICS_AREA * 128; i++){
+		LCD_WriteData16(0x0, LCD_CMD_DATA_WRITE_INCR_ADP);
+	}
+}
+
+static void LCD_WriteData8(uint8_t Data, uint8_t Command){
+	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
 	LCD_DATA_ADDR = Data;
+	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
 	LCD_COMMAND_ADR = Command;
 }
 
-void LCD_WriteData16(uint16_t Data, uint8_t Command){
-	while(LCD_COMMAND_ADR != 0x3){}
+static void LCD_WriteData16(uint16_t Data, uint8_t Command){
+	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
 	LCD_DATA_ADDR = (uint8_t) Data;
-	while(LCD_COMMAND_ADR != 0x3){}
-	LCD_DATA_ADDR = Data >> 8;
+	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
+	LCD_DATA_ADDR = (uint8_t) (Data >> 8);
+	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
 	LCD_COMMAND_ADR = Command;
 }
 
-void LCD_WriteCommand(uint8_t Command){
-	while(LCD_COMMAND_ADR != 0x3){}
+static void LCD_WriteCommand(uint8_t Command){
+	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
 	LCD_COMMAND_ADR = Command;
 }
 

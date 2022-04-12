@@ -69,17 +69,17 @@
 
 /*  - M a c r o s                                                        */
 
-#define GPIOX_SET_(a, b)      GPIO ## a ->BSRR = 1 << b
+#define GPIOX_SET_(a, b)      GPIO ## a ->BSRR = (1 << b)
 #define GPIOX_SET(a)          GPIOX_SET_(a)
 
-#define GPIOX_CLR_(a, b)      GPIO ## a ->BSRR = 1 << (b + 16)
+#define GPIOX_CLR_(a, b)      GPIO ## a ->BSRR = (1 << (b + 16))
 #define GPIOX_CLR(a)          GPIOX_CLR_(a)
 
-#define GPIOX_MODE_(a, b, c)	GPIO ## a->MODER = c << (b * 2)
+#define GPIOX_MODE_(a, b, c)	GPIO ## a->MODER |= ((GPIO ## a->MODER & ~(0x3 << (b * 2))) | (c << (b * 2)))
 #define GPIOX_MODE(a, b)			GPIOX_MODE_(a, b)
 
 /*Pins 0-7 Low register, Pins 8-15 High Register*/
-#define GPIOX_AFR_(a, b, c)		GPIO ## a->AFR[((b > 7) ? 1 : 0)] = (c << (((b > 7) ? (b - 8): b) * 4))				
+#define GPIOX_AFR_(a, b, c)		GPIO ## a->AFR[((b > 7) ? 1 : 0)] = (GPIO ## a->AFR[((b > 7) ? 1 : 0)] & ~(0xF << (((b > 7) ? (b - 8): b) * 4)) | (c << (((b > 7) ? (b - 8): b) * 4)))				
 #define GPIOX_AFR(a, b)				GPIOX_MODE_(a, b)
 
 
