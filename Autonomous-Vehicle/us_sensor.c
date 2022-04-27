@@ -3,69 +3,65 @@
  *                                                                        *
  **************************************************************************
  *  PROJECT       MC Mobile  																							*
- *  MODULE        eventhandler.c                                           		  *
+ *  MODULE        us_sensor.c                                           			  *
  *  REVISION      1.0                                                     *
  *  AUTHOR        Simon Hoffmann & Aleksei Svatko            							*
  **************************************************************************
  *  PURPOSE:                                                              *
- *                                      															    *
+ *                                  *
  *                                                                        *
  **************************************************************************
  *  CHANGE HISTORY:                                                       *
  *   Date  		       Author      						 Description       				    *
- *   31.03.2022  		 S. Hoff & A. Svatko     creation 									  *
+ *   26.04.2022  		 S. Hoff & A. Svatko     creation              				*
  *                                                                        *
  *************************************************************************/
- 
+
+
 /* ---------------- G L O B A L   D E F I N I T I O N S ---------------- */
 
 /*-------------------------- I N C L U D E S ----------------------------*/
 
-#include "eventhandler.h"
-#include "led.h"
-#include "lcd.h"
-#include "isr.h"
+#include "us_sensor.h"
+#include "gpio.h"
+#include "stm32g474xx.h"
+#include "delay.h"
 
-/* ----------------- G L O B A L    V A R I A B L E S ------------------ */
+/* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
 
-/* ------------  F U N C T I O N   D E F I N I T I O N ----------------- */
+/* ------------- F u n c t i o n  P r o t o t y p e s  ----------------- */
 
-/**
-* @brief  Initialises all Peripherals/Hardware components
-* @param  None	
-* @retval None
-*/
-static void initHandler(){
-	LED_Init();
-	LCD_Init();
-	//ISR_Init();
-	event_SetEvent(EVT_LED_ON, 0);
-}
+/* ----------------------- F U N C T I O N S  -------------------------- */
 
-/**
-* @brief  Handler 1 Handles no event, initialisation and LED events
-* @param  curEvent:	Current event to be executed
-* @retval None
-*/
-void eventhandler_Handler1(EVENT_T curEvent){
-	switch(curEvent.EventID){
-		case EVT_NOEVENT:
+void us_sensor_measure_distance(enum US_sensor_position position){
+	switch(position){
+		case Left:
+			GPIOX_MODE(GPIO_PC7, GPIO_MODE_OUTPUT);
+			GPIOX_SET(GPIO_PC7);
+			delayus(10);
+			GPIOX_CLR(GPIO_PC7);
+			delayus(400);
+			GPIOX_MODE(GPIO_PC7, GPIO_MODE_INPUT);
 			break;
-		case EVT_INIT:
-			initHandler();
+		case Middle:
+			GPIOX_MODE(GPIO_PC8, GPIO_MODE_OUTPUT);
+			GPIOX_SET(GPIO_PC8);
+			delayus(10);
+			GPIOX_CLR(GPIO_PC8);
+			delayus(400);
+			GPIOX_MODE(GPIO_PC8, GPIO_MODE_INPUT);
 			break;
-		case EVT_LED_ON:
-			LED_On();
-			break;
-		case EVT_LED_OFF:
-			LED_Off();
-			break;
-		case EVT_LED_BLINK:
-			LED_Blink(curEvent.EventParameter);
-			break;
-		case EVT_US_SENSOR_READ:
+		case Right:
+			GPIOX_MODE(GPIO_PC9, GPIO_MODE_OUTPUT);
+			GPIOX_SET(GPIO_PC9);
+			delayus(10);
+			GPIOX_CLR(GPIO_PC9);
+			delayus(400);
+			GPIOX_MODE(GPIO_PC8, GPIO_MODE_INPUT);
 			break;
 		default:
 			break;
 	}
 }
+
+
