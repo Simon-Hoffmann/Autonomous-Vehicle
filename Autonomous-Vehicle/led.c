@@ -45,7 +45,6 @@ void LED_Blink(uint8_t blink_amount);
 */
 void LED_Init(void){
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOEEN;
-	GPIOX_MODE_CLR(GPIO_PE11);
 	GPIOX_MODE(GPIO_PE11, GPIO_MODE_OUTPUT);
 }
 

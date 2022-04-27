@@ -473,6 +473,16 @@
               <FileType>5</FileType>
               <FilePath>.\gpio.h</FilePath>
             </File>
+            <File>
+              <FileName>us_sensor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\us_sensor.h</FilePath>
+            </File>
+            <File>
+              <FileName>us_sensor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\us_sensor.c</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
