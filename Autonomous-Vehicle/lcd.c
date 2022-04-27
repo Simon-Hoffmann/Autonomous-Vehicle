@@ -28,11 +28,14 @@
 
 /* ----------------- G L O B A L    V A R I A B L E S ------------------ */
 
-/* ----------------------  F U N C T I O N S --------------------------- */
+/* ------------- F u n c t i o n  P r o t o t y p e s  ----------------- */
 
+static void LCD_ClearScreen(void);
 void LCD_WriteData8(uint8_t Data, uint8_t Command);
 void LCD_WriteData16(uint16_t Data, uint8_t Command);
 void LCD_WriteCommand(uint8_t Command);
+
+/* ----------------------- F U N C T I O N S  -------------------------- */
 
 /**
 * @brief  Initialise GPIO Pins:
@@ -102,7 +105,21 @@ void LCD_Init(void){
 	LCD_WriteCommand(LCD_CMD_EXOR_MODE);
 	LCD_WriteCommand(LCD_CMD_TEXT_ON_GRAPHICS_ON);
 	
-		LCD_WriteData16(0x000, LCD_CMD_SET_ADDRESS_POINTER);
+	LCD_ClearScreen();
+	
+	//quick test
+	LCD_WriteData8('C', LCD_CMD_DATA_WRITE_INCR_ADP);
+	LCD_WriteData8('A', LCD_CMD_DATA_WRITE_INCR_ADP);
+	LCD_WriteData8('T', LCD_CMD_DATA_WRITE_INCR_ADP);
+}
+
+/**
+* @brief  Clears the LCD screen of all set pixels
+* @param  None
+* @retval None
+*/
+static void LCD_ClearScreen(void){
+	LCD_WriteData16(0x000, LCD_CMD_SET_ADDRESS_POINTER);
 	int i =0;
 	for(i = 0; i < 480; i++){
 		LCD_WriteData16(0x0, LCD_CMD_DATA_WRITE_INCR_ADP);
@@ -112,16 +129,14 @@ void LCD_Init(void){
 		LCD_WriteData16(0x0, LCD_CMD_DATA_WRITE_INCR_ADP);
 	}
 	LCD_WriteData16(0x000, LCD_CMD_SET_ADDRESS_POINTER);
-	
-	//quick test
-	LCD_WriteData8('C', LCD_CMD_DATA_WRITE_INCR_ADP);
-	LCD_WriteData8('A', LCD_CMD_DATA_WRITE_INCR_ADP);
-	LCD_WriteData8('T', LCD_CMD_DATA_WRITE_INCR_ADP);
 }
 
-//
-
-//
+/**
+* @brief  Writes a char character to LCD screen
+* @param  Data		Char to be written
+*					Command	Command for data handling
+* @retval None
+*/
 void LCD_WriteData8(uint8_t Data, uint8_t Command){
 	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
 	LCD_DATA_ADDR = Data;
@@ -129,6 +144,12 @@ void LCD_WriteData8(uint8_t Data, uint8_t Command){
 	LCD_COMMAND_ADR = Command;
 }
 
+/**
+* @brief  Writes two char characters to LCD screen
+* @param  Data		Chars to be written
+*					Command	Command for data handling
+* @retval None
+*/
 void LCD_WriteData16(uint16_t Data, uint8_t Command){
 	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
 	LCD_DATA_ADDR = (uint8_t) Data;
@@ -138,6 +159,11 @@ void LCD_WriteData16(uint16_t Data, uint8_t Command){
 	LCD_COMMAND_ADR = Command;
 }
 
+/**
+* @brief  Sends command to LCD screen
+* @param  Command for data handling
+* @retval None
+*/
 void LCD_WriteCommand(uint8_t Command){
 	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
 	LCD_COMMAND_ADR = Command;
