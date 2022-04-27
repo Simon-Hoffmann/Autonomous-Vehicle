@@ -20,5 +20,6 @@
 /*  - F u n c t i o n  P r o t o t y p e s                               */
 
 void delayms(uint32_t);
+void delayus(uint32_t);
 
 #endif // _DELAY_H
