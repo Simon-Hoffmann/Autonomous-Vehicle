@@ -28,7 +28,9 @@
 
 /*  - T y p e s                                                          */
 
-enum US_sensor_position{Left, Middle, Right};
+#define US_SENSOR_LEFT 		1
+#define US_SENSOR_MIDDLE 	2
+#define US_SENSOR_RIGHT		4
 
 /*  - C o n s t a n t s                                                  */
 
@@ -36,5 +38,8 @@ enum US_sensor_position{Left, Middle, Right};
 
 /*  - P u p b l i c   V a r i a b l e s                                  */
 
+/*  - P u b l i c  F u n c t i o n  P r o t o t y p e s                 */
+
+void us_sensor_measure_distance(uint8_t US_sensor_position);
 
 #endif
