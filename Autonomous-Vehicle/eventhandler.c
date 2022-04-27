@@ -25,6 +25,7 @@
 #include "led.h"
 #include "lcd.h"
 #include "isr.h"
+#include "us_sensor.h"
 
 /* ----------------- G L O B A L    V A R I A B L E S ------------------ */
 
@@ -54,6 +55,7 @@ void eventhandler_Handler1(EVENT_T curEvent){
 		case EVT_INIT:
 			initHandler();
 			break;
+		/* ------------ L E D -----------*/
 		case EVT_LED_ON:
 			LED_On();
 			break;
@@ -63,7 +65,15 @@ void eventhandler_Handler1(EVENT_T curEvent){
 		case EVT_LED_BLINK:
 			LED_Blink(curEvent.EventParameter);
 			break;
+		/* ------------ U.S. S E N S O R -----------*/
 		case EVT_US_SENSOR_READ:
+			us_sensor_measure_distance(curEvent.EventParameter);
+			break;
+		case EVT_US_SENSOR_LEFT_DIST:
+			break;
+		case EVT_US_SENSOR_MIDDLE_DIST:
+			break;
+		case EVT_US_SENSOR_RIGHT_DIST:
 			break;
 		default:
 			break;

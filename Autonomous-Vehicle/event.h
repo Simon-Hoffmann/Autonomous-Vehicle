@@ -27,12 +27,18 @@
 #include <stdint.h>
 
 /*---------------------EVENTS------------------*/
-#define EVT_NOEVENT 				0
-#define EVT_INIT 						1
-#define EVT_LED_ON					2
-#define EVT_LED_OFF					3
-#define EVT_LED_BLINK				4
-#define EVT_US_SENSOR_READ  5
+#define EVT_NOEVENT 							0
+#define EVT_INIT 									1
+/*LED*/
+#define EVT_LED_ON								2
+#define EVT_LED_OFF								3
+#define EVT_LED_BLINK							4
+/*U.S. Sensor*/
+#define EVT_US_SENSOR_READ  			5
+#define EVT_US_SENSOR_LEFT_DIST		6
+#define EVT_US_SENSOR_MIDDLE_DIST	7
+#define EVT_US_SENSOR_RIGHT_DIST	8
+
 
 /*  - T y p e s                                                          */
 
