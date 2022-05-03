@@ -34,6 +34,7 @@
 
 /*  - P u b l i c  F u n c t i o n  P r o t o t y p e s                 */
 
-void ISR_Init(void);
+void ISR_US_Sensor_Init(void);
+void ISR_US_sensor_startInterrupt(void);
 
 #endif

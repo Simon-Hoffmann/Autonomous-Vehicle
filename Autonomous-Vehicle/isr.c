@@ -74,7 +74,7 @@ void ISR_US_Sensor_Init(void){
 * @param  None
 * @retval None
 */
-void startInterrupt(void){
+void ISR_US_sensor_startInterrupt(void){
 	EXTI->RTSR1 = ((EXTI->RTSR1  & ~(0x7 << 7)) | (0x7 << 7));			//rising trigger on GPIO interrupt
 	NVIC_EnableIRQ(EXTI9_5_IRQn);																		
 }
@@ -87,31 +87,33 @@ void startInterrupt(void){
 void EXTI9_5_IRQHandler(void){
 	if(initialInterrupt){
 		EXTI->PR1 &= ~(EXTI_PR1_PIF7 & EXTI_PR1_PIF8 & EXTI_PR1_PIF9);	//reset interrupt flag
+		/*Set timer for signal length of US sensor*/
 		TIM6->CNT = 0;
 		TIM6->CR1 |= TIM_CR1_CEN;																				//Run the Timer
-		EXTI->FTSR1 = ((EXTI->FTSR1  & ~(0x7 << 7)) | (0x7 << 7));			//falling trigger
+		EXTI->FTSR1 = ((EXTI->FTSR1  & ~(0x7 << 7)) | (0x7 << 7));			//interrupt on falling trigger
 		initialInterrupt = false;
 	} else {
-		int time = TIM6->CNT;
+		int time_50us = TIM6->CNT;
 		NVIC_DisableIRQ(EXTI9_5_IRQn);
 		switch((EXTI->PR1 >> 7) & 0x7){ 
 			case US_SENSOR_LEFT:
-				event_SetEvent(EVT_US_SENSOR_LEFT_DIST, time);
+				event_SetEvent(EVT_US_SENSOR_LEFT_DIST, time_50us);
 				event_SetEvent(EVT_US_SENSOR_READ, US_SENSOR_MIDDLE);
 				break;
 			case US_SENSOR_MIDDLE:
-				event_SetEvent(EVT_US_SENSOR_MIDDLE_DIST, time);
+				event_SetEvent(EVT_US_SENSOR_MIDDLE_DIST, time_50us);
 				event_SetEvent(EVT_US_SENSOR_READ, US_SENSOR_RIGHT);
 				break;
 			case US_SENSOR_RIGHT:
-				event_SetEvent(EVT_US_SENSOR_RIGHT_DIST, time);
+				event_SetEvent(EVT_US_SENSOR_RIGHT_DIST, time_50us);
 			//-------------------------------------------------------update lcd
-				TIM6->CR1 = (TIM6->CR1 & ~TIM_CR1_CEN);
-				TIM6->CNT = 0;
 				break;
 			default:
 				break;
 		}
+		/*Disable and reset timer*/
+		TIM6->CR1 = (TIM6->CR1 & ~TIM_CR1_CEN);
+		TIM6->CNT = 0;
 		EXTI->PR1 &= ~(EXTI_PR1_PIF7 & EXTI_PR1_PIF8 & EXTI_PR1_PIF9);
 	}
 }
