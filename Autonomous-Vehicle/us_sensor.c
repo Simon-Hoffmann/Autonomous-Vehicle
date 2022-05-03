@@ -26,6 +26,7 @@
 #include "gpio.h"
 #include "stm32g474xx.h"
 #include "delay.h"
+#include "isr.h"
 
 /* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
 
@@ -35,6 +36,11 @@ static uint16_t us_sensor_middle_cm, us_sensor_left_cm, us_sensor_right_cm;
 
 /* ----------------------- F U N C T I O N S  -------------------------- */
 
+/**
+* @brief  Handles the measuring of distance with the US sensor
+* @param  US_sensor_position: left, middle or right sensor	
+* @retval None
+*/
 void us_sensor_measure_distance(uint8_t US_sensor_position){
 	switch(US_sensor_position){
 		case US_SENSOR_LEFT:
@@ -44,6 +50,7 @@ void us_sensor_measure_distance(uint8_t US_sensor_position){
 			GPIOX_CLR(GPIO_PC7);
 			delayus(400);
 			GPIOX_MODE(GPIO_PC7, GPIO_MODE_INPUT);
+			ISR_US_sensor_startInterrupt();
 			break;
 		case US_SENSOR_MIDDLE:
 			GPIOX_MODE(GPIO_PC8, GPIO_MODE_OUTPUT);
@@ -52,6 +59,7 @@ void us_sensor_measure_distance(uint8_t US_sensor_position){
 			GPIOX_CLR(GPIO_PC8);
 			delayus(400);
 			GPIOX_MODE(GPIO_PC8, GPIO_MODE_INPUT);
+			ISR_US_sensor_startInterrupt();
 			break;
 		case US_SENSOR_RIGHT:
 			GPIOX_MODE(GPIO_PC9, GPIO_MODE_OUTPUT);
@@ -60,30 +68,47 @@ void us_sensor_measure_distance(uint8_t US_sensor_position){
 			GPIOX_CLR(GPIO_PC9);
 			delayus(400);
 			GPIOX_MODE(GPIO_PC8, GPIO_MODE_INPUT);
+			ISR_US_sensor_startInterrupt();
 			break;
 		default:
 			break;
 	}
 }
 
-void us_sensor_setSensor(uint8_t US_sensor_position, uint16_t time){
-	time = (time*25)/58;
+/**
+* @brief  Sets the currently measured distance of a sensor
+* @param  US_sensor_position: left, middle or right sensor	
+*					time_50us:					time x 50us
+* @retval None
+*/
+void us_sensor_setSensor(uint8_t US_sensor_position, uint16_t time_50us){
+	uint16_t dist = (time_50us*25)/58;
 	switch(US_sensor_position){
 		case US_SENSOR_LEFT:
-			us_sensor_left_cm = time;
+			us_sensor_left_cm = dist;
 			break;
 		case US_SENSOR_MIDDLE:
-			us_sensor_middle_cm = time;
+			us_sensor_middle_cm = dist;
 			break;
 		case US_SENSOR_RIGHT:
-			us_sensor_right_cm = time;
+			us_sensor_right_cm = dist;
 			break;
 		default:
 			break;
 	}
 }
 
+uint16_t us_sensor_GetDistance_left(void){
+	return us_sensor_left_cm;
+}
 
+uint16_t us_sensor_GetDistance_middle(void){
+	return us_sensor_middle_cm;
+}
+
+uint16_t us_sensor_GetDistance_right(void){
+	return us_sensor_right_cm;
+}
 
 
 
