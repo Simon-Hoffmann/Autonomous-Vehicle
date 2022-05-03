@@ -20,6 +20,8 @@
 #ifndef _LCD_H_
 #define _LCD_H_
 
+#include <stdint.h>
+
 /*************************************************************************/
 /* -------------- E X P O R T E D   D E F I N I T I O N S -------------- */
 /*************************************************************************/
@@ -58,5 +60,6 @@
 /*  - P u b l i c  F u n c t i o n  P r o t o t y p e s                 */
 
 void LCD_Init(void);
+void LCD_Update_US_Sensor(uint16_t dist_left, uint16_t dist_middle, uint16_t dist_right);
 
 #endif

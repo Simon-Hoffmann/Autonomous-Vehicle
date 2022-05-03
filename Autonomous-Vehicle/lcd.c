@@ -22,15 +22,19 @@
 
 /*-------------------------- I N C L U D E S ----------------------------*/
 
+#include <stdio.h>
+
 #include "lcd.h"
 #include "gpio.h"
 #include "stm32g474xx.h"
+
 
 /* ----------------- G L O B A L    V A R I A B L E S ------------------ */
 
 /* ------------- F u n c t i o n  P r o t o t y p e s  ----------------- */
 
 static void LCD_ClearScreen(void);
+static void LCD_DrawInitialScreen(void);
 void LCD_WriteData8(uint8_t Data, uint8_t Command);
 void LCD_WriteData16(uint16_t Data, uint8_t Command);
 void LCD_WriteCommand(uint8_t Command);
@@ -107,10 +111,7 @@ void LCD_Init(void){
 	
 	LCD_ClearScreen();
 	
-	//quick test
-	LCD_WriteData8('C', LCD_CMD_DATA_WRITE_INCR_ADP);
-	LCD_WriteData8('A', LCD_CMD_DATA_WRITE_INCR_ADP);
-	LCD_WriteData8('T', LCD_CMD_DATA_WRITE_INCR_ADP);
+	LCD_DrawInitialScreen();
 }
 
 /**
@@ -132,12 +133,44 @@ static void LCD_ClearScreen(void){
 }
 
 /**
+* @brief  Fills screen at beginning
+* @param  None
+* @retval None
+*/
+static void LCD_DrawInitialScreen(void){
+
+}
+
+/**
+* @brief  Sets the Address pointer of LCD
+* @param  Address where pointer should be
+* @retval None
+*/
+static void LCD_SetAddressPointer(uint16_t Address){
+	LCD_WriteData16(0x000, LCD_CMD_SET_ADDRESS_POINTER);
+}
+
+/**
+* @brief  Clears specified address range on LCD
+* @param  StartAddress:	Beginning
+*					EndAddress:		End
+* @retval None
+*/
+static void LCD_CLR_Text_Area(uint16_t StartAddress, uint16_t EndAddress){
+	LCD_WriteData16(StartAddress, LCD_CMD_SET_ADDRESS_POINTER);
+	uint16_t i =StartAddress;
+	for(i = StartAddress; i < EndAddress; i++){
+		LCD_WriteData16(0x0, LCD_CMD_DATA_WRITE_INCR_ADP);
+	}
+}
+
+/**
 * @brief  Writes a char character to LCD screen
 * @param  Data		Char to be written
 *					Command	Command for data handling
 * @retval None
 */
-void LCD_WriteData8(uint8_t Data, uint8_t Command){
+static void LCD_WriteData8(uint8_t Data, uint8_t Command){
 	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
 	LCD_DATA_ADDR = Data;
 	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
@@ -150,7 +183,7 @@ void LCD_WriteData8(uint8_t Data, uint8_t Command){
 *					Command	Command for data handling
 * @retval None
 */
-void LCD_WriteData16(uint16_t Data, uint8_t Command){
+static void LCD_WriteData16(uint16_t Data, uint8_t Command){
 	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
 	LCD_DATA_ADDR = (uint8_t) Data;
 	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
@@ -164,11 +197,28 @@ void LCD_WriteData16(uint16_t Data, uint8_t Command){
 * @param  Command for data handling
 * @retval None
 */
-void LCD_WriteCommand(uint8_t Command){
+static void LCD_WriteCommand(uint8_t Command){
 	while((LCD_COMMAND_ADR & 0x3) != 0x3){}
 	LCD_COMMAND_ADR = Command;
 }
 
-
+void LCD_Update_US_Sensor(uint16_t dist_left, uint16_t dist_middle, uint16_t dist_right){
+	LCD_CLR_Text_Area(0, 30);
+	LCD_SetAddressPointer(0);
+	char distance[3][10];
+	
+	sprintf(distance[0], "%d", dist_left);
+	sprintf(distance[1], "%d", dist_middle);
+	sprintf(distance[2], "%d", dist_right);
+	int i = 0;
+	int count;
+	for(i = 0; i < 3; i++){
+		count = 0;
+		do{
+			LCD_WriteData8(distance[i][count], LCD_CMD_DATA_WRITE_INCR_ADP);
+		}while(distance[i][++count] != NULL);
+		LCD_WriteData8('|', LCD_CMD_DATA_WRITE_INCR_ADP);
+	}
+}
 
 
