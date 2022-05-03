@@ -38,7 +38,8 @@
 #define EVT_US_SENSOR_LEFT_DIST		6
 #define EVT_US_SENSOR_MIDDLE_DIST	7
 #define EVT_US_SENSOR_RIGHT_DIST	8
-
+/*LCD*/
+#define EVT_LCD_DISTANCE_UPDATE		9
 
 /*  - T y p e s                                                          */
 

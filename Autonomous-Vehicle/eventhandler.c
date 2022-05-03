@@ -39,7 +39,7 @@
 static void initHandler(){
 	LED_Init();
 	LCD_Init();
-	//ISR_Init();
+	ISR_US_Sensor_Init();
 	event_SetEvent(EVT_LED_ON, 0);
 }
 
@@ -70,10 +70,17 @@ void eventhandler_Handler1(EVENT_T curEvent){
 			us_sensor_measure_distance(curEvent.EventParameter);
 			break;
 		case EVT_US_SENSOR_LEFT_DIST:
+			us_sensor_setSensor(US_SENSOR_LEFT, curEvent.EventParameter);
 			break;
 		case EVT_US_SENSOR_MIDDLE_DIST:
+			us_sensor_setSensor(US_SENSOR_MIDDLE, curEvent.EventParameter);
 			break;
 		case EVT_US_SENSOR_RIGHT_DIST:
+			us_sensor_setSensor(US_SENSOR_RIGHT, curEvent.EventParameter);
+			break;
+		/*------------------ L C D -------------------*/
+		case EVT_LCD_DISTANCE_UPDATE:
+			LCD_Update_US_Sensor(us_sensor_GetDistance_left(), us_sensor_GetDistance_middle(), us_sensor_GetDistance_right());
 			break;
 		default:
 			break;
