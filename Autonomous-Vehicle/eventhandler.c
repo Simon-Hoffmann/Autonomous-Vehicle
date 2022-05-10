@@ -39,8 +39,10 @@
 static void initHandler(){
 	LED_Init();
 	LCD_Init();
+	US_sensor_gpio_Init();
 	ISR_US_Sensor_Init();
 	event_SetEvent(EVT_LED_ON, 0);
+	event_SetEvent(EVT_US_SENSOR_READ, US_SENSOR_LEFT);			//remove then
 }
 
 /**
@@ -69,13 +71,13 @@ void eventhandler_Handler1(EVENT_T curEvent){
 		case EVT_US_SENSOR_READ:
 			us_sensor_measure_distance(curEvent.EventParameter);
 			break;
-		case EVT_US_SENSOR_LEFT_DIST:
+		case EVT_US_SENSOR_SET_LEFT_DIST:
 			us_sensor_setSensor(US_SENSOR_LEFT, curEvent.EventParameter);
 			break;
-		case EVT_US_SENSOR_MIDDLE_DIST:
+		case EVT_US_SENSOR_SET_MIDDLE_DIST:
 			us_sensor_setSensor(US_SENSOR_MIDDLE, curEvent.EventParameter);
 			break;
-		case EVT_US_SENSOR_RIGHT_DIST:
+		case EVT_US_SENSOR_SET_RIGHT_DIST:
 			us_sensor_setSensor(US_SENSOR_RIGHT, curEvent.EventParameter);
 			break;
 		/*------------------ L C D -------------------*/

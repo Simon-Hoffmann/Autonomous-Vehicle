@@ -64,7 +64,7 @@ void LCD_WriteCommand(uint8_t Command);
 void LCD_Init(void){
 	
 	/*PIN CONFIG*/
-	RCC->AHB2ENR |= RCC_AHB2ENR_GPIODEN;;	//Clock enable
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIODEN;	//Clock enable
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOFEN;
 	
 	
@@ -205,7 +205,8 @@ static void LCD_WriteCommand(uint8_t Command){
 void LCD_Update_US_Sensor(uint16_t dist_left, uint16_t dist_middle, uint16_t dist_right){
 	LCD_CLR_Text_Area(0, 30);
 	LCD_SetAddressPointer(0);
-	char distance[3][10];
+	char distance[3][10] = {0};
+	char letter = '\0';
 	
 	sprintf(distance[0], "%d", dist_left);
 	sprintf(distance[1], "%d", dist_middle);
@@ -215,8 +216,9 @@ void LCD_Update_US_Sensor(uint16_t dist_left, uint16_t dist_middle, uint16_t dis
 	for(i = 0; i < 3; i++){
 		count = 0;
 		do{
-			LCD_WriteData8(distance[i][count], LCD_CMD_DATA_WRITE_INCR_ADP);
-		}while(distance[i][++count] != NULL);
+			char letter = distance[i][count];
+			LCD_WriteData8(letter, LCD_CMD_DATA_WRITE_INCR_ADP);
+		}while(distance[i][++count] != '\0');
 		LCD_WriteData8('|', LCD_CMD_DATA_WRITE_INCR_ADP);
 	}
 }

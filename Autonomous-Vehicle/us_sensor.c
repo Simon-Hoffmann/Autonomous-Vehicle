@@ -36,6 +36,12 @@ static uint16_t us_sensor_middle_cm, us_sensor_left_cm, us_sensor_right_cm;
 
 /* ----------------------- F U N C T I O N S  -------------------------- */
 
+
+void US_sensor_gpio_Init(void){
+	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;	//Clock enable
+}
+
+
 /**
 * @brief  Handles the measuring of distance with the US sensor
 * @param  US_sensor_position: left, middle or right sensor	
@@ -46,28 +52,46 @@ void us_sensor_measure_distance(uint8_t US_sensor_position){
 		case US_SENSOR_LEFT:
 			GPIOX_MODE(GPIO_PC7, GPIO_MODE_OUTPUT);
 			GPIOX_SET(GPIO_PC7);
-			delayus(10);
+			delayus(15);
 			GPIOX_CLR(GPIO_PC7);
 			delayus(400);
-			GPIOX_MODE(GPIO_PC7, GPIO_MODE_INPUT);
+			GPIOX_MODE(GPIO_PC7, GPIO_MODE_INPUT);			
+//			while(((GPIOC->IDR) & 1<<7) == 0){}
+//			TIM6->CNT = 0;
+//			delayus(80);
+//			while((GPIOC->IDR & 1<<7) == (1<<7)){}
+//			int time = TIM6->CNT;
+//			us_sensor_setSensor(US_SENSOR_LEFT, time);
 			ISR_US_sensor_startInterrupt();
 			break;
 		case US_SENSOR_MIDDLE:
 			GPIOX_MODE(GPIO_PC8, GPIO_MODE_OUTPUT);
 			GPIOX_SET(GPIO_PC8);
-			delayus(10);
+			delayus(15);
 			GPIOX_CLR(GPIO_PC8);
 			delayus(400);
 			GPIOX_MODE(GPIO_PC8, GPIO_MODE_INPUT);
+//			while(((GPIOC->IDR) & 1<<8) == 0){}
+//			TIM6->CNT = 0;
+//			delayus(80);
+//			while((GPIOC->IDR & 1<<8) == (1<<8)){}
+//			int time = TIM6->CNT;
+//			us_sensor_setSensor(US_SENSOR_MIDDLE, time);
 			ISR_US_sensor_startInterrupt();
 			break;
 		case US_SENSOR_RIGHT:
 			GPIOX_MODE(GPIO_PC9, GPIO_MODE_OUTPUT);
 			GPIOX_SET(GPIO_PC9);
-			delayus(10);
+			delayus(15);
 			GPIOX_CLR(GPIO_PC9);
 			delayus(400);
 			GPIOX_MODE(GPIO_PC8, GPIO_MODE_INPUT);
+//			while(((GPIOC->IDR) & 1<<8) == 0){}
+//			TIM6->CNT = 0;
+//			delayus(80);
+//			while((GPIOC->IDR & 1<<8) == (1<<8)){}
+//			int time = TIM6->CNT;
+//			us_sensor_setSensor(US_SENSOR_RIGHT, time);
 			ISR_US_sensor_startInterrupt();
 			break;
 		default:
@@ -81,8 +105,8 @@ void us_sensor_measure_distance(uint8_t US_sensor_position){
 *					time_50us:					time x 50us
 * @retval None
 */
-void us_sensor_setSensor(uint8_t US_sensor_position, uint16_t time_50us){
-	uint16_t dist = (time_50us*25)/58;
+void us_sensor_setSensor(uint8_t US_sensor_position, uint16_t time_us){
+	uint16_t dist = time_us/58;
 	switch(US_sensor_position){
 		case US_SENSOR_LEFT:
 			us_sensor_left_cm = dist;

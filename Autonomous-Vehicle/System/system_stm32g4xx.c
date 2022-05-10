@@ -215,9 +215,7 @@ void SystemInit(void)
 
        // switch to PLLCLK
 			      RCC->CFGR |= 3;   // SW = 11 => selected clock -> pll 
-
 	#endif
-	
 }
 
 

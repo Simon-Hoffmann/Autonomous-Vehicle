@@ -40,6 +40,7 @@
 
 /*  - P u b l i c  F u n c t i o n  P r o t o t y p e s                 */
 
+void US_sensor_gpio_Init(void);
 void us_sensor_measure_distance(uint8_t US_sensor_position);
 void us_sensor_setSensor(uint8_t US_sensor_position, uint16_t time_50us);
 uint16_t us_sensor_GetDistance_left(void);
