@@ -25,6 +25,9 @@
 /*************************************************************************/
 
 /*Gpio Pins used*/	
+#define GPIO_PB10					B, 10U
+#define GPIO_PB11					B, 11U
+#define GPIO_PC2					C, 2U
 #define GPIO_PC7					C, 7U
 #define GPIO_PC8					C, 8U
 #define GPIO_PC9					C, 9U
@@ -33,11 +36,20 @@
 #define GPIO_PD4          D, 4U	
 #define GPIO_PD5          D, 5U	
 #define GPIO_PD7          D, 7U		
+#define GPIO_PD8          D, 8U	
+#define GPIO_PD9          D, 9U	
+#define GPIO_PD10         D, 10U	
+#define GPIO_PD11         D, 11U	
+#define GPIO_PD12         D, 12U	
+#define GPIO_PD13         D, 13U	
 #define GPIO_PD14         D, 14U				
-#define GPIO_PD15         D, 15U					
+#define GPIO_PD15         D, 15U	
+#define GPIO_PE0          E, 0U	
+#define GPIO_PE1          E, 1U	
 #define GPIO_PE7          E, 7U					
 #define GPIO_PE8          E, 8U			
-#define GPIO_PE9          E, 9U				
+#define GPIO_PE9          E, 9U	
+#define GPIO_PE15         E, 15U	
 #define GPIO_PE10         E, 10U	
 #define GPIO_PE11					E, 11U
 #define GPIO_PF10					F, 10U		

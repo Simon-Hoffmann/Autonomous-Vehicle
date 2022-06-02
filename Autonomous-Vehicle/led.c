@@ -28,7 +28,7 @@
 
 /* ----------------- G L O B A L    V A R I A B L E S ------------------ */
 
-
+/* ------------- F u n c t i o n  P r o t o t y p e s  ----------------- */
 
 void LED_Init(void);
 void LED_On(void);

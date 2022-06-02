@@ -27,6 +27,7 @@
 #include "stm32g474xx.h"
 #include "delay.h"
 #include "isr.h"
+#include "event.h"
 
 /* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
 
@@ -36,7 +37,11 @@ static uint16_t us_sensor_middle_cm, us_sensor_left_cm, us_sensor_right_cm;
 
 /* ----------------------- F U N C T I O N S  -------------------------- */
 
-
+/**
+* @brief  Initialise US sensor GPIO Pins
+* @param  None
+* @retval None
+*/
 void US_sensor_gpio_Init(void){
 	RCC->AHB2ENR |= RCC_AHB2ENR_GPIOCEN;	//Clock enable
 }
@@ -48,6 +53,7 @@ void US_sensor_gpio_Init(void){
 * @retval None
 */
 void us_sensor_measure_distance(uint8_t US_sensor_position){
+	int time;
 	switch(US_sensor_position){
 		case US_SENSOR_LEFT:
 			GPIOX_MODE(GPIO_PC7, GPIO_MODE_OUTPUT);
@@ -56,13 +62,13 @@ void us_sensor_measure_distance(uint8_t US_sensor_position){
 			GPIOX_CLR(GPIO_PC7);
 			delayus(400);
 			GPIOX_MODE(GPIO_PC7, GPIO_MODE_INPUT);			
-//			while(((GPIOC->IDR) & 1<<7) == 0){}
-//			TIM6->CNT = 0;
-//			delayus(80);
-//			while((GPIOC->IDR & 1<<7) == (1<<7)){}
-//			int time = TIM6->CNT;
-//			us_sensor_setSensor(US_SENSOR_LEFT, time);
-			ISR_US_sensor_startInterrupt();
+			while(((GPIOC->IDR) & 1<<7) == 0){}
+			TIM6->CNT = 0;
+			delayus(80);
+			while((GPIOC->IDR & 1<<7) == (1<<7)){}
+			time = TIM6->CNT;
+			us_sensor_setSensor(US_SENSOR_LEFT, time);
+			event_SetEvent(EVT_US_SENSOR_READ, US_SENSOR_MIDDLE);
 			break;
 		case US_SENSOR_MIDDLE:
 			GPIOX_MODE(GPIO_PC8, GPIO_MODE_OUTPUT);
@@ -71,13 +77,13 @@ void us_sensor_measure_distance(uint8_t US_sensor_position){
 			GPIOX_CLR(GPIO_PC8);
 			delayus(400);
 			GPIOX_MODE(GPIO_PC8, GPIO_MODE_INPUT);
-//			while(((GPIOC->IDR) & 1<<8) == 0){}
-//			TIM6->CNT = 0;
-//			delayus(80);
-//			while((GPIOC->IDR & 1<<8) == (1<<8)){}
-//			int time = TIM6->CNT;
-//			us_sensor_setSensor(US_SENSOR_MIDDLE, time);
-			ISR_US_sensor_startInterrupt();
+			while(((GPIOC->IDR) & 1<<8) == 0){}
+			TIM6->CNT = 0;
+			delayus(80);
+			while((GPIOC->IDR & 1<<8) == (1<<8)){}
+			time = TIM6->CNT;
+			us_sensor_setSensor(US_SENSOR_MIDDLE, time);
+			event_SetEvent(EVT_US_SENSOR_READ, US_SENSOR_RIGHT);
 			break;
 		case US_SENSOR_RIGHT:
 			GPIOX_MODE(GPIO_PC9, GPIO_MODE_OUTPUT);
@@ -85,14 +91,14 @@ void us_sensor_measure_distance(uint8_t US_sensor_position){
 			delayus(15);
 			GPIOX_CLR(GPIO_PC9);
 			delayus(400);
-			GPIOX_MODE(GPIO_PC8, GPIO_MODE_INPUT);
-//			while(((GPIOC->IDR) & 1<<8) == 0){}
-//			TIM6->CNT = 0;
-//			delayus(80);
-//			while((GPIOC->IDR & 1<<8) == (1<<8)){}
-//			int time = TIM6->CNT;
-//			us_sensor_setSensor(US_SENSOR_RIGHT, time);
-			ISR_US_sensor_startInterrupt();
+			GPIOX_MODE(GPIO_PC9, GPIO_MODE_INPUT);
+			while(((GPIOC->IDR) & 1<<9) == 0){}
+			TIM6->CNT = 0;
+			delayus(80);
+			while((GPIOC->IDR & 1<<9) == (1<<9)){}
+			time = TIM6->CNT;
+			us_sensor_setSensor(US_SENSOR_RIGHT, time);
+			event_SetEvent(EVT_LCD_DISTANCE_UPDATE,0);
 			break;
 		default:
 			break;
@@ -122,14 +128,29 @@ void us_sensor_setSensor(uint8_t US_sensor_position, uint16_t time_us){
 	}
 }
 
+/**
+* @brief  Returns Left US sensor distance reading
+* @param  None
+* @retval US sensor reading
+*/
 uint16_t us_sensor_GetDistance_left(void){
 	return us_sensor_left_cm;
 }
 
+/**
+* @brief  Returns Middle US sensor distance reading
+* @param  None
+* @retval US sensor reading
+*/
 uint16_t us_sensor_GetDistance_middle(void){
 	return us_sensor_middle_cm;
 }
 
+/**
+* @brief  Returns Right US sensor distance reading
+* @param  None
+* @retval US sensor reading
+*/
 uint16_t us_sensor_GetDistance_right(void){
 	return us_sensor_right_cm;
 }
