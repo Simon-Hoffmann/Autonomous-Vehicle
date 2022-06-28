@@ -53,6 +53,7 @@
 
 /*  - C o n s t a n t s                                                  */
 
+
 /*  - M a c r o s     */
                                                   
 /*  - P u p b l i c   V a r i a b l e s                                  */
@@ -61,5 +62,7 @@
 
 void LCD_Init(void);
 void LCD_Update_US_Sensor(uint16_t dist_left, uint16_t dist_middle, uint16_t dist_right);
+void LCD_Update_Compass(uint16_t deg);
+void LCD_Update_Distance_Driven(unsigned int distance);
 
 #endif
