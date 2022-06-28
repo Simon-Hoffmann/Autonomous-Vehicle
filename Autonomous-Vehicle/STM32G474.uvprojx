@@ -10,7 +10,7 @@
       <TargetName>AEiSy_Px</TargetName>
       <ToolsetNumber>0x4</ToolsetNumber>
       <ToolsetName>ARM-ADS</ToolsetName>
-      <pCCUsed>5060960::V5.06 update 7 (build 960)::.\ARMCC</pCCUsed>
+      <pCCUsed>5060960::V5.06 update 7 (build 960)::ARMCC</pCCUsed>
       <uAC6>0</uAC6>
       <TargetOption>
         <TargetCommonOption>
@@ -488,6 +488,36 @@
               <FileType>1</FileType>
               <FilePath>.\us_sensor.c</FilePath>
             </File>
+            <File>
+              <FileName>compass.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\compass.c</FilePath>
+            </File>
+            <File>
+              <FileName>compass.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\compass.h</FilePath>
+            </File>
+            <File>
+              <FileName>pwm.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\pwm.c</FilePath>
+            </File>
+            <File>
+              <FileName>pwm.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\pwm.h</FilePath>
+            </File>
+            <File>
+              <FileName>odometer.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\odometer.c</FilePath>
+            </File>
+            <File>
+              <FileName>odometer.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\odometer.h</FilePath>
+            </File>
           </Files>
         </Group>
         <Group>
@@ -512,6 +542,26 @@
               <FileName>eventhandler.h</FileName>
               <FileType>5</FileType>
               <FilePath>.\eventhandler.h</FilePath>
+            </File>
+            <File>
+              <FileName>motor.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\motor.c</FilePath>
+            </File>
+            <File>
+              <FileName>motor.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\motor.h</FilePath>
+            </File>
+            <File>
+              <FileName>autodrive.c</FileName>
+              <FileType>1</FileType>
+              <FilePath>.\autodrive.c</FilePath>
+            </File>
+            <File>
+              <FileName>autodrive.h</FileName>
+              <FileType>5</FileType>
+              <FilePath>.\autodrive.h</FilePath>
             </File>
           </Files>
         </Group>

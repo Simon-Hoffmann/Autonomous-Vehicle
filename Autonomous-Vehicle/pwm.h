@@ -3,46 +3,37 @@
  *                                                                        *
  **************************************************************************
  *  PROJECT       MC Mobile  																							*
- *  MODULE        main.c                                           			  *
+ *  MODULE        pwm.h                                           			  *
  *  REVISION      1.0                                                     *
  *  AUTHOR        Simon Hoffmann & Aleksei Svatko            							*
  **************************************************************************
  *  PURPOSE:                                                              *
- *   Main Programm									                                      *
+ *   Initialises and controls PWM                                        *
  *                                                                        *
  **************************************************************************
  *  CHANGE HISTORY:                                                       *
  *   Date  		       Author      						 Description       				    *
- *   28.03.2022  		 S. Hoff & A. Svatko     creation              				*
+ *   24.05.2022  		 S. Hoff & A. Svatko     creation              				*
  *                                                                        *
  *************************************************************************/
 
+#ifndef _PWM_H_
+#define _PWM_H_
 
-/* ---------------- G L O B A L   D E F I N I T I O N S ---------------- */
+/*************************************************************************/
+/* -------------- E X P O R T E D   D E F I N I T I O N S -------------- */
+/*************************************************************************/
 
-/*-------------------------- I N C L U D E S ----------------------------*/
+/*  - T y p e s                                                          */
 
-#include "stm32g474xx.h"
-#include "event.h"
-#include "eventhandler.h"
+/*  - C o n s t a n t s                                                  */
 
-/* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
+/*  - M a c r o s                                                        */
 
-/* ------------- F u n c t i o n  P r o t o t y p e s  ----------------- */
+/*  - P u p b l i c   V a r i a b l e s                                  */
 
-/* ----------------------- F U N C T I O N S  -------------------------- */
+/*  - P u b l i c  F u n c t i o n  P r o t o t y p e s                 */
 
-/* --------------  S t a r t    o f    p r o g r a m  -----------------  */
+void PWM_Init(void);
 
-	
-int main(void)
-{
-	EVENT_T curEvent;
-  event_SetEvent(EVT_INIT, 0);
-
-	while(1)
-	{
-		curEvent = event_GetEvent();
-		eventhandler_Handler1(curEvent);
-	}
-}
+#endif

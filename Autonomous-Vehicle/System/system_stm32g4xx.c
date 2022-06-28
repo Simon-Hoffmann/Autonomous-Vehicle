@@ -185,7 +185,7 @@ void SystemInit(void)
 	
 	/* Configure the system clock */
 
-#ifdef DEBUG
+
     /* pll (12 MHz ext. crystal) */
     /* from reference manual:  
        To modify the PLL configuration, proceed as follows:  */
@@ -215,7 +215,7 @@ void SystemInit(void)
 
        // switch to PLLCLK
 			      RCC->CFGR |= 3;   // SW = 11 => selected clock -> pll 
-	#endif
+
 }
 
 
