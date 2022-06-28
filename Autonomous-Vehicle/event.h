@@ -25,6 +25,7 @@
 /*************************************************************************/
 
 #include <stdint.h>
+#include <stdbool.h>
 
 /*---------------------EVENTS------------------*/
 #define EVT_NOEVENT 									0
@@ -40,7 +41,26 @@
 #define EVT_US_SENSOR_SET_RIGHT_DIST	8
 /*LCD*/
 #define EVT_LCD_DISTANCE_UPDATE				9
-
+#define EVT_LCD_COMPASS_UPDATE				10
+#define EVT_LCD_DISTANCE_DRIVEN_UPDATE 11
+/*COMPASS*/
+#define EVT_COMPASS_GET_DIRECTION			12
+/*MOTOR*/
+#define EVT_MOTOR_DRIVE_FORWARD				13
+#define EVT_MOTOR_DRIVE_BACKWARD			14
+#define EVT_MOTOR_TURN_LEFT						15
+#define EVT_MOTOR_TURN_RIGHT					16
+#define EVT_MOTOR_STOP_ALL						17
+#define EVT_MOTOR_STOP_LEFT						18
+#define EVT_MOTOR_STOP_RIGHT					19
+#define EVT_MOTOR_DRIVE_DISTANCE			20
+#define EVT_MOTOR_TURN_LEFT_DEGREES		21
+#define EVT_MOTOR_TURN_RIGHT_DEGREES	22
+/*ODOMETER*/
+/*DELAY*/
+#define EVT_DELAY_MS									23
+/*AUTONOMOUS DRIVING*/
+#define EVT_AUTODRIVE_DRIVELOGIC			24
 /*  - T y p e s                                                          */
 
 typedef struct {
@@ -53,6 +73,8 @@ typedef struct {
 /*  - M a c r o s                                                        */
 
 /*  - P u p b l i c   V a r i a b l e s                                  */
+
+static volatile bool nextDriveEvent = false;
 
 /*  - P u b l i c  F u n c t i o n  P r o t o t y p e s                 */
 

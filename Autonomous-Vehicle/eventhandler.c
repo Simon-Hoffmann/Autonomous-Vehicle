@@ -26,6 +26,11 @@
 #include "lcd.h"
 #include "isr.h"
 #include "us_sensor.h"
+#include "compass.h"
+#include "motor.h"
+#include "odometer.h"
+#include "delay.h"
+#include "autodrive.h"
 
 /* ----------------- G L O B A L    V A R I A B L E S ------------------ */
 
@@ -37,12 +42,15 @@
 * @retval None
 */
 static void initHandler(){
+
 	LED_Init();
 	LCD_Init();
+	compass_Init();
 	US_sensor_gpio_Init();
 	ISR_US_Sensor_Init();
+	motor_Init();
+	odometer_Init();
 	event_SetEvent(EVT_LED_ON, 0);
-	event_SetEvent(EVT_US_SENSOR_READ, US_SENSOR_LEFT);			//remove then
 }
 
 /**
@@ -83,6 +91,62 @@ void eventhandler_Handler1(EVENT_T curEvent){
 		/*------------------ L C D -------------------*/
 		case EVT_LCD_DISTANCE_UPDATE:
 			LCD_Update_US_Sensor(us_sensor_GetDistance_left(), us_sensor_GetDistance_middle(), us_sensor_GetDistance_right());
+			break;
+		case EVT_LCD_COMPASS_UPDATE:
+			LCD_Update_Compass(compass_get_compass_Deg());
+			break;
+		case EVT_LCD_DISTANCE_DRIVEN_UPDATE:
+			LCD_Update_Distance_Driven(getDistanceDriven());
+			break;
+		/*------------------ C O M P A S S-------------------*/
+		case EVT_COMPASS_GET_DIRECTION:
+			compass_getDirection();
+			break;
+		/*------------------ M O T O R -------------------*/
+		case EVT_MOTOR_DRIVE_FORWARD:
+			motor_drive_forward();
+			break;
+		case EVT_MOTOR_DRIVE_BACKWARD:
+			motor_drive_backward();
+			break;
+		case EVT_MOTOR_TURN_LEFT:
+			motor_turn_left();
+			break;
+		case EVT_MOTOR_TURN_RIGHT:
+			motor_turn_right();
+			break;
+		case EVT_MOTOR_STOP_ALL:
+			motor_stop_all();
+			break;
+		case EVT_MOTOR_STOP_LEFT:
+			motor_stop_left();
+			break;
+		case EVT_MOTOR_STOP_RIGHT:
+			motor_stop_right();
+			break;
+		case EVT_MOTOR_DRIVE_DISTANCE:
+			motor_stop_all();
+			odometer_check_distance(curEvent.EventParameter);
+			motor_drive_forward();
+			break;
+		case EVT_MOTOR_TURN_LEFT_DEGREES:
+			motor_stop_all();
+			odometer_check_turn(curEvent.EventParameter);
+			updateDirection(curEvent.EventParameter, 0);
+			motor_turn_left();
+			break;
+		case EVT_MOTOR_TURN_RIGHT_DEGREES:
+			motor_stop_all();
+			odometer_check_turn(curEvent.EventParameter);
+			updateDirection(curEvent.EventParameter, 1);
+			motor_turn_right();
+			break;
+		case EVT_DELAY_MS:
+			delayms(curEvent.EventParameter);
+			break;
+		/*AUTODRIVE*/
+		case EVT_AUTODRIVE_DRIVELOGIC:
+			driveLogic( us_sensor_GetDistance_middle(),us_sensor_GetDistance_left(), us_sensor_GetDistance_right(), odometer_GetDirection());
 			break;
 		default:
 			break;

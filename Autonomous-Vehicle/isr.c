@@ -29,9 +29,9 @@
 #include "stm32g474xx.h"
 #include "us_sensor.h"
 
-/* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
+static volatile unsigned int countHandlerCalls = 0;
 
-static bool initialInterrupt = true;
+/* ----------- V A R I A B L E S   &  C O N S T A N T S  --------------- */
 
 /* ------------- F u n c t i o n  P r o t o t y p e s  ----------------- */
 
@@ -46,13 +46,6 @@ static bool initialInterrupt = true;
 * @retval None
 */
 void ISR_US_Sensor_Init(void){
-	/*-----------US sensor GPIO Interrupt-----------*/
-	RCC->APB2ENR |= 1;																									//clock enable sysconfig
-	SYSCFG->EXTICR[1] = ((SYSCFG->EXTICR[1] & ~(2 << 12)) | (2 << 12));	//EXTI channel to PF7
-	SYSCFG->EXTICR[2] = ((SYSCFG->EXTICR[2] & ~0x22) | 0x22);						//EXTI channel to PF8 and PF9
-	EXTI->IMR1 = ((EXTI->IMR1 & ~(0x7 << 7)) | (0x7 << 7));							//EXTI enable lines 7-9
-	NVIC_SetPriority(EXTI9_5_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),5,0));
-	
 	/*--------US sensor signal timer for distance calculation----------*/
 	RCC->APB1ENR1 |= RCC_APB1ENR1_TIM6EN;
 	TIM6->PSC = 48 - 1;										//Prescaler 48 000 000 / 48 = 1 000 000 Hz	-> 1us
@@ -73,72 +66,26 @@ void ISR_US_Sensor_Init(void){
 }
 
 /**
-* @brief  Starts relevant timers for receiving the US sensor signal 
-* @param  None
-* @retval None
-*/
-void ISR_US_sensor_startInterrupt(void){
-	EXTI->RTSR1 = ((EXTI->RTSR1  & ~(0x7 << 7)) | (0x7 << 7));			//rising trigger on GPIO interrupt
-	EXTI->PR1 |= (EXTI_PR1_PIF7 | EXTI_PR1_PIF8 | EXTI_PR1_PIF9);
-	//maybe while loop as well
-	NVIC_EnableIRQ(EXTI9_5_IRQn);																		
-}
-
-/**
-* @brief  Handler for capturing time of signal
-* @param  None
-* @retval None
-*/
-void EXTI9_5_IRQHandler(void){
-	if(initialInterrupt){
-		
-		/*Set timer for signal length of US sensor*/
-		TIM6->CNT = 0;																									//Run the Timer
-		EXTI->RTSR1 = 0x0;																							//disable interrupt on rising trigger
-		EXTI->FTSR1 = ((EXTI->FTSR1  & ~(0x7 << 7)) | (0x7 << 7));			//interrupt on falling trigger
-		initialInterrupt = false;
-		while(NVIC_GetPendingIRQ(EXTI9_5_IRQn)){
-			EXTI->PR1 |= (EXTI_PR1_PIF7 | EXTI_PR1_PIF8 | EXTI_PR1_PIF9);	//reset interrupt flag					possibly put this before while, do the same at bottom
-			NVIC_ClearPendingIRQ(EXTI9_5_IRQn);
-		}
-	} else {
-		int time_us = TIM6->CNT;
-		NVIC_DisableIRQ(EXTI9_5_IRQn);
-		switch((EXTI->PR1 >> 7) & 0x7){ 
-			case US_SENSOR_LEFT:
-				event_SetEvent(EVT_US_SENSOR_SET_LEFT_DIST, time_us);
-				event_SetEvent(EVT_US_SENSOR_READ, US_SENSOR_MIDDLE);
-				break;
-			case US_SENSOR_MIDDLE:
-				event_SetEvent(EVT_US_SENSOR_SET_MIDDLE_DIST, time_us);
-				event_SetEvent(EVT_US_SENSOR_READ, US_SENSOR_RIGHT);
-				break;
-			case US_SENSOR_RIGHT:
-				event_SetEvent(EVT_US_SENSOR_SET_RIGHT_DIST, time_us);
-			//-------------------------------------------------------update lcd
-				event_SetEvent(EVT_LCD_DISTANCE_UPDATE, 0);
-				break;
-			default:
-				break;
-		}
-		/*Disable and reset timer*/
-		EXTI->FTSR1 = 0x0;																			//disable interrupt on falling trigger
-		while(NVIC_GetPendingIRQ(EXTI9_5_IRQn)){
-			EXTI->PR1 |= (EXTI_PR1_PIF7 | EXTI_PR1_PIF8 | EXTI_PR1_PIF9);	//reset interrupt flag
-			NVIC_ClearPendingIRQ(EXTI9_5_IRQn);
-		}
-		initialInterrupt = true;
-	}
-}
-
-/**
 * @brief  Handler for constant US sensor read
 * @param  None
 * @retval None
 */
 void TIM2_IRQHandler(void){
 	TIM2->SR &= ~TIM_SR_UIF;
-	//event_SetEvent(EVT_US_SENSOR_READ, US_SENSOR_LEFT);
+	countHandlerCalls++;
+	event_SetEvent(EVT_US_SENSOR_READ, US_SENSOR_LEFT);
+	event_SetEvent(EVT_COMPASS_GET_DIRECTION, 0);
+	if((countHandlerCalls % 2) == 2){
+		event_SetEvent(EVT_LCD_COMPASS_UPDATE, 0);
+		event_SetEvent(EVT_LCD_DISTANCE_DRIVEN_UPDATE, 0);
+	}else if(countHandlerCalls == 4){
+			if(nextDriveEvent){
+				event_SetEvent(EVT_AUTODRIVE_DRIVELOGIC, 0);
+				nextDriveEvent = false;
+			}
+			countHandlerCalls = 0;
+	}
+
 }
 
 
