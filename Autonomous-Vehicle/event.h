@@ -74,7 +74,7 @@ typedef struct {
 
 /*  - P u p b l i c   V a r i a b l e s                                  */
 
-static volatile bool nextDriveEvent = false;
+extern volatile bool nextDriveEvent;
 
 /*  - P u b l i c  F u n c t i o n  P r o t o t y p e s                 */
 
