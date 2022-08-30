@@ -44,6 +44,7 @@
 static void initHandler(){
 
 	LED_Init();
+	delayms(1000);
 	LCD_Init();
 	compass_Init();
 	US_sensor_gpio_Init();
