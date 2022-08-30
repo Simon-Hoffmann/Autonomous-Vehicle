@@ -97,7 +97,7 @@ void odometer_check_distance(int distance_cm){
 * @retval None
 */
 void odometer_check_turn(uint16_t degrees){
-	distanceToDrive = (degrees/90) * 80;
+	distanceToDrive = (((degrees * 100)/90) * 80)/100;
 	motorLeft = 0;
 	motorRight = 0;
 	checkDistanceRight = true;
@@ -137,7 +137,7 @@ void EXTI1_IRQHandler(void)
     EXTI->PR1 |= 0x0002; /* Clear the pending bit */
     motorLeft++;
 		if(checkDistanceLeft){
-			if(motorLeft == distanceToDrive){	
+			if(motorLeft >= distanceToDrive){	
 				event_SetEvent(EVT_MOTOR_STOP_LEFT, 0);
 				checkDistanceLeft = false;
 				nextDriveEvent = true;
@@ -158,7 +158,7 @@ void EXTI2_IRQHandler(void)
     EXTI->PR1 |= 0x0004; /* Clear the pending bit */
     motorRight++;
 		if(checkDistanceRight){
-				if(motorRight == distanceToDrive){
+				if(motorRight >= distanceToDrive){
 					event_SetEvent(EVT_MOTOR_STOP_RIGHT, 0);
 					checkDistanceRight = false;
 					nextDriveEvent = true;
