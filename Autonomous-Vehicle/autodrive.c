@@ -42,29 +42,33 @@ void driveLogic(uint16_t us_sensor_middle_cm, uint16_t us_sensor_left_cm, uint16
 		return;
 	}
 	
-	if(us_sensor_left_cm <= 15){
-		event_SetEvent(EVT_MOTOR_TURN_RIGHT_DEGREES, 30);
-	} else if(us_sensor_right_cm <= 15){
+	if(us_sensor_left_cm > (us_sensor_middle_cm + 20) && us_sensor_left_cm > (us_sensor_right_cm + 20) ){
 		event_SetEvent(EVT_MOTOR_TURN_LEFT_DEGREES, 30);
-	} else if(us_sensor_middle_cm <= 15){
-		if(us_sensor_right_cm > us_sensor_left_cm){
+		driveForwardAfterTurn = true;
+	}else if (us_sensor_right_cm > (us_sensor_middle_cm + 20) && us_sensor_right_cm > (us_sensor_left_cm + 20) ){
+		event_SetEvent(EVT_MOTOR_TURN_RIGHT_DEGREES, 30);
+		driveForwardAfterTurn = true;
+	}else if(us_sensor_left_cm <= 20){
+		if(us_sensor_middle_cm <= 20){
+			event_SetEvent(EVT_MOTOR_TURN_RIGHT_DEGREES, 120);
+		}else{
+			event_SetEvent(EVT_MOTOR_TURN_RIGHT_DEGREES, 30);
+		}
+	} else if(us_sensor_right_cm <= 20){
+		if(us_sensor_middle_cm <= 40){
+			event_SetEvent(EVT_MOTOR_TURN_LEFT_DEGREES, 120);
+		}else{
+			event_SetEvent(EVT_MOTOR_TURN_LEFT_DEGREES, 30);
+		}
+	} else if(us_sensor_middle_cm <= 20){
+		if(us_sensor_right_cm > us_sensor_left_cm + 10){
 			event_SetEvent(EVT_MOTOR_TURN_RIGHT_DEGREES, 30);
 		}else{
 			event_SetEvent(EVT_MOTOR_TURN_LEFT_DEGREES, 30);
 		}
-	}else	if(us_sensor_left_cm > (us_sensor_middle_cm + 40) && us_sensor_left_cm > (us_sensor_right_cm + 40) ){
-		event_SetEvent(EVT_MOTOR_TURN_LEFT_DEGREES, 30);
-		driveForwardAfterTurn = true;
-	}else if (us_sensor_right_cm > (us_sensor_middle_cm + 40) && us_sensor_right_cm > (us_sensor_left_cm + 40) ){
-		event_SetEvent(EVT_MOTOR_TURN_RIGHT_DEGREES, 30);
-		driveForwardAfterTurn = true;
 	}else {
 		event_SetEvent(EVT_MOTOR_DRIVE_FORWARD, 0);
 		nextDriveEvent = true;
 	}
-	
-	
-	//event_SetEvent(EVT_DELAY_MS, 2000);
-	
 
 }
