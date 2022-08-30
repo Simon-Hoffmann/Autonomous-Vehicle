@@ -57,7 +57,7 @@ void ISR_US_Sensor_Init(void){
 	/*------Initialization of Timer interrupt that initiates US sensor read--------*/
 	RCC->APB1ENR1 |= RCC_APB1ENR1_TIM2EN;
 	TIM2->PSC = 5 - 1;										//Prescaler 5 * Arr 9 600 000 = 48 000 000
-	TIM2->ARR= 4800000 - 1;								//SystemCoreClock = 9 600 000 / 4 800 000 = 2Hz -> every 500ms
+	TIM2->ARR= 2400000 - 1;								//SystemCoreClock = 9 600 000 / 2 400 000 = 4Hz -> every 250ms
 	TIM2->CNT=0;
 	TIM2->DIER = TIM_DIER_UIE;
 	NVIC_SetPriority(TIM2_IRQn, NVIC_EncodePriority(NVIC_GetPriorityGrouping(),6,0));
@@ -75,17 +75,15 @@ void TIM2_IRQHandler(void){
 	countHandlerCalls++;
 	event_SetEvent(EVT_US_SENSOR_READ, US_SENSOR_LEFT);
 	event_SetEvent(EVT_COMPASS_GET_DIRECTION, 0);
-	if((countHandlerCalls % 2) == 2){
+	if(countHandlerCalls == 2){
 		event_SetEvent(EVT_LCD_COMPASS_UPDATE, 0);
 		event_SetEvent(EVT_LCD_DISTANCE_DRIVEN_UPDATE, 0);
-	}else if(countHandlerCalls == 4){
-			if(nextDriveEvent){
+		if(nextDriveEvent){
 				event_SetEvent(EVT_AUTODRIVE_DRIVELOGIC, 0);
 				nextDriveEvent = false;
-			}
-			countHandlerCalls = 0;
+		}
+		countHandlerCalls = 0;
 	}
-
 }
 
 
