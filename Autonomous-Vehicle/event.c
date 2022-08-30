@@ -34,6 +34,7 @@ static uint8_t readIndex = 0;
 static uint8_t writeIndex = 0;
 static uint8_t bufferLength = 0;
 static EVENT_T event;
+volatile bool nextDriveEvent = true;
 
 /**
  * @brief  	Adds Event to circleBuffer
